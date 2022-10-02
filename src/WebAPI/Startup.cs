@@ -53,10 +53,15 @@ public class Startup
     public Startup SetDbContext()
     {
         var connString = _builder.Configuration.GetConnectionString("DefaultConnection");
+        var transactionConnString = _builder.Configuration.GetConnectionString("TransactionConnection");
 
         _builder.Services.AddDbContext<MessageDbContext>(options =>
         {
             options.UseSqlServer(connString).EnableSensitiveDataLogging();
+        });
+        _builder.Services.AddDbContext<TransactionDbContext>(options =>
+        {
+            options.UseSqlServer(transactionConnString).EnableSensitiveDataLogging();
         });
         
         _logger.Debug("SQL connection was successfully added");

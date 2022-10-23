@@ -12,8 +12,26 @@ public static class AutoMapperConfig
     {
         var result = new MapperConfigurationExpression();
 
-        result.CreateMap<Message, MessageDto>().ReverseMap();
-        result.CreateMap<ICollection<Message>, MessageListDto>()
+        result.CreateMap<AddInvoiceDto, Invoice>()
+            .ForPath(dest => dest.Transaction, act => act.Ignore());
+        
+        result.CreateMap<Currency, CurrencyDto>().ReverseMap();
+        result.CreateMap<ICollection<Currency>, CurrencyListDto>()
+            .ForMember(dest => dest.Items, act => act.MapFrom(src => src))
+            .ForMember(dest => dest.Count, act => act.MapFrom(src => src.Count));
+        
+        result.CreateMap<TransactionCategory, TransactionCategoryDto>().ReverseMap();
+        result.CreateMap<ICollection<TransactionCategory>, TransactionCategoryListDto>()
+            .ForMember(dest => dest.Items, act => act.MapFrom(src => src))
+            .ForMember(dest => dest.Count, act => act.MapFrom(src => src.Count));
+        
+        result.CreateMap<Invoice, InvoiceDto>().ReverseMap();
+        result.CreateMap<ICollection<Invoice>, InvoiceListDto>()
+            .ForMember(dest => dest.Items, act => act.MapFrom(src => src))
+            .ForMember(dest => dest.Count, act => act.MapFrom(src => src.Count));
+        
+        result.CreateMap<Transaction, TransactionDto>().ReverseMap();
+        result.CreateMap<ICollection<TransactionDto>, TransactionListDto>()
             .ForMember(dest => dest.Items, act => act.MapFrom(src => src))
             .ForMember(dest => dest.Count, act => act.MapFrom(src => src.Count));
 

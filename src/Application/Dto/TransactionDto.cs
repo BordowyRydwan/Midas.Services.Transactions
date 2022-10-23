@@ -1,6 +1,6 @@
-namespace Domain.Entities;
+namespace Application.Dto;
 
-public class Transaction
+public class TransactionDto
 {
     public ulong Id { get; set; }
     public string Title { get; set; }
@@ -12,10 +12,10 @@ public class Transaction
     public ulong UserId { get; set; }
     
     public string CurrencyCode { get; set; }
-    public Currency Currency { get; set; }
+    public CurrencyDto Currency { get; set; }
     
     public ulong TransactionCategoryId { get; set; }
-    public TransactionCategory TransactionCategory { get; set; }
+    public TransactionCategoryDto TransactionCategory { get; set; }
 
-    public ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+    public InvoiceListDto Invoices { get; set; }
 }

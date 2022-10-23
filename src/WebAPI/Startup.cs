@@ -7,6 +7,8 @@ using Infrastructure.Interfaces;
 using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Midas.Services;
+using Midas.Services.Family;
+using Midas.Services.User;
 using NLog;
 using NLog.Web;
 using WebAPI.Extensions;
@@ -52,13 +54,8 @@ public class Startup
 
     public Startup SetDbContext()
     {
-        var connString = _builder.Configuration.GetConnectionString("DefaultConnection");
         var transactionConnString = _builder.Configuration.GetConnectionString("TransactionConnection");
-
-        _builder.Services.AddDbContext<MessageDbContext>(options =>
-        {
-            options.UseSqlServer(connString).EnableSensitiveDataLogging();
-        });
+        
         _builder.Services.AddDbContext<TransactionDbContext>(options =>
         {
             options.UseSqlServer(transactionConnString).EnableSensitiveDataLogging();
@@ -81,7 +78,9 @@ public class Startup
 
     public Startup AddInternalServices()
     {
-        _builder.Services.AddScoped<IMessageService, MessageService>();
+        _builder.Services.AddScoped<ITransactionService, TransactionService>();
+        _builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+        _builder.Services.AddScoped<IDictionaryService, DictionaryService>();
         _logger.Debug("Internal services were successfully added");
 
         return this;
@@ -89,7 +88,9 @@ public class Startup
 
     public Startup AddInternalRepositories()
     {
-        _builder.Services.AddScoped<IMessageRepository, MessageRepository>();
+        _builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+        _builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+        _builder.Services.AddScoped<IDictionaryRepository, DictionaryRepository>();
         _logger.Debug("Internal repositories were successfully added");
 
         return this;
@@ -108,8 +109,11 @@ public class Startup
 
     public Startup SetExternalServiceClients()
     {
-        var authServiceAddress = _builder.Configuration["ServiceAddresses:Authorization"];
-        var httpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(authServiceAddress));
+        var userServiceAddress = _builder.Configuration["ServiceAddresses:User"];
+        var familyServiceAddress = _builder.Configuration["ServiceAddresses:Family"];
+        
+        var userHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(userServiceAddress));
+        var familyHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(familyServiceAddress));
         var httpClientHandler = new HttpClientHandler
         {
             ClientCertificateOptions = ClientCertificateOption.Manual,
@@ -117,10 +121,14 @@ public class Startup
         };
         
         _builder.Services.AddHeaderPropagation(o => o.Headers.Add("Authorization"));
-        _builder.Services.AddHttpClient<IAuthorizationClient, AuthorizationClient>(httpClientDelegate)
+        
+        _builder.Services.AddHttpClient<IUserClient, UserClient>(userHttpClientDelegate)
             .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
             .AddHeaderPropagation();
-        
+        _builder.Services.AddHttpClient<IUserClient, UserClient>(familyHttpClientDelegate)
+            .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
+            .AddHeaderPropagation();
+
         return this;
     }
     

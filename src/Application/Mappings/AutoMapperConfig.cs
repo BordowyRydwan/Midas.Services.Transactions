@@ -24,8 +24,9 @@ public static class AutoMapperConfig
         result.CreateMap<ICollection<TransactionCategory>, TransactionCategoryListDto>()
             .ForMember(dest => dest.Items, act => act.MapFrom(src => src))
             .ForMember(dest => dest.Count, act => act.MapFrom(src => src.Count));
-        
-        result.CreateMap<Invoice, InvoiceDto>().ReverseMap();
+
+        result.CreateMap<Invoice, InvoiceDto>()
+            .ForMember(dest => dest.FileMetadata, act => act.Ignore());
         result.CreateMap<ICollection<Invoice>, InvoiceListDto>()
             .ForMember(dest => dest.Items, act => act.MapFrom(src => src))
             .ForMember(dest => dest.Count, act => act.MapFrom(src => src.Count));

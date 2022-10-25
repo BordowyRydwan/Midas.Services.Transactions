@@ -1,10 +1,12 @@
 using Application.Dto;
+using Application.Helpers;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Midas.Services.Family;
+using Midas.Services.FileStorage;
 using Midas.Services.User;
 
 namespace Application.Services;
@@ -15,35 +17,29 @@ public class TransactionService : ITransactionService
     private readonly IMapper _mapper;
     private readonly IUserClient _userClient;
     private readonly IFamilyClient _familyClient;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IFileStorageClient _fileClient;
 
     public TransactionService(
         ITransactionRepository transactionRepository,
         IMapper mapper, 
         IUserClient userClient, 
         IFamilyClient familyClient,
-        IHttpContextAccessor httpContextAccessor
+        IFileStorageClient fileClient
     )
     {
         _transactionRepository = transactionRepository;
         _mapper = mapper;
         _userClient = userClient;
         _familyClient = familyClient;
-        _httpContextAccessor = httpContextAccessor;
+        _fileClient = fileClient;
     }
     
     public async Task AddTransaction(TransactionDto transaction)
     {
-        var activeUser = await _userClient.GetActiveUserAsync().ConfigureAwait(false);
-        var userFamilyRoles = await _familyClient.GetFamilyMembershipsForUserAsync().ConfigureAwait(false);
-        var canChangeValue = new List<bool>
-        {
-            (ulong)activeUser.Id == transaction.Id,
-            userFamilyRoles.Items.FirstOrDefault(x => x.User.Id == activeUser.Id).FamilyRole.Name ==
-            "Main administrator"
-        };
+        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transaction.Id);
+        var canChangeValue = await PermissionHelper.IsTransactionOwnedByUserOrHisFamily(permissionCheckArgs);
         
-        if (!canChangeValue.All(x => x))
+        if (!canChangeValue)
         {
             throw new Exception();
         }
@@ -54,16 +50,10 @@ public class TransactionService : ITransactionService
 
     public async Task DeleteTransaction(ulong transactionId)
     {
-        var activeUser = await _userClient.GetActiveUserAsync().ConfigureAwait(false);
-        var userFamilyRoles = await _familyClient.GetFamilyMembershipsForUserAsync().ConfigureAwait(false);
-        var canChangeValue = new List<bool>
-        {
-            (ulong)activeUser.Id == transactionId,
-            userFamilyRoles.Items.FirstOrDefault(x => x.User.Id == activeUser.Id).FamilyRole.Name ==
-            "Main administrator"
-        };
+        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transactionId);
+        var canChangeValue = await PermissionHelper.IsTransactionOwnedByUserOrHisFamily(permissionCheckArgs);
         
-        if (!canChangeValue.All(x => x))
+        if (!canChangeValue)
         {
             throw new Exception();
         }
@@ -73,6 +63,14 @@ public class TransactionService : ITransactionService
 
     public async Task ModifyTransaction(TransactionDto transaction)
     {
+        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transaction.Id);
+        var canChangeValue = await PermissionHelper.IsTransactionOwnedByUserOrHisFamily(permissionCheckArgs);
+        
+        if (!canChangeValue)
+        {
+            throw new Exception();
+        }
+        
         var entity = _mapper.Map<TransactionDto, Transaction>(transaction);
         await _transactionRepository.ModifyTransaction(entity).ConfigureAwait(false);
     }
@@ -81,6 +79,15 @@ public class TransactionService : ITransactionService
     {
         var transactions = await _transactionRepository.GetTransactionsForUser(userId).ConfigureAwait(false);
         var result = _mapper.Map<ICollection<Transaction>, TransactionListDto>(transactions);
+
+        foreach (var transaction in result.Items)
+        {
+            foreach (var invoice in transaction.Invoices.Items)
+            {
+                var fileMetadata = await _fileClient.GetFileMetadataAsync(invoice.FileId);
+                invoice.FileMetadata = fileMetadata;
+            }
+        }
 
         return result;
     }
@@ -92,6 +99,26 @@ public class TransactionService : ITransactionService
             .ConfigureAwait(false);
         
         var result = _mapper.Map<ICollection<Transaction>, TransactionListDto>(transactions);
+        
+        foreach (var transaction in result.Items)
+        {
+            foreach (var invoice in transaction.Invoices.Items)
+            {
+                var fileMetadata = await _fileClient.GetFileMetadataAsync(invoice.FileId);
+                invoice.FileMetadata = fileMetadata;
+            }
+        }
+        
         return result;
+    }
+
+    private TransactionOwnedByUserOrHisFamilyArgs GenerateDefaultPermissionCheckArgs(ulong transactionId)
+    {
+        return new TransactionOwnedByUserOrHisFamilyArgs
+        {
+            TransactionId = Convert.ToInt64(transactionId),
+            UserClient = _userClient,
+            FamilyClient = _familyClient
+        };
     }
 }

@@ -8,6 +8,7 @@ using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Midas.Services;
 using Midas.Services.Family;
+using Midas.Services.FileStorage;
 using Midas.Services.User;
 using NLog;
 using NLog.Web;
@@ -111,9 +112,11 @@ public class Startup
     {
         var userServiceAddress = _builder.Configuration["ServiceAddresses:User"];
         var familyServiceAddress = _builder.Configuration["ServiceAddresses:Family"];
+        var fileServiceAddress = _builder.Configuration["ServiceAddresses:File"];
         
         var userHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(userServiceAddress));
         var familyHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(familyServiceAddress));
+        var fileHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(fileServiceAddress));
         var httpClientHandler = new HttpClientHandler
         {
             ClientCertificateOptions = ClientCertificateOption.Manual,
@@ -125,10 +128,13 @@ public class Startup
         _builder.Services.AddHttpClient<IUserClient, UserClient>(userHttpClientDelegate)
             .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
             .AddHeaderPropagation();
-        _builder.Services.AddHttpClient<IUserClient, UserClient>(familyHttpClientDelegate)
+        _builder.Services.AddHttpClient<IFamilyClient, FamilyClient>(familyHttpClientDelegate)
             .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
             .AddHeaderPropagation();
-
+        _builder.Services.AddHttpClient<IFileStorageClient, FileStorageClient>(fileHttpClientDelegate)
+            .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
+            .AddHeaderPropagation();
+        
         return this;
     }
     

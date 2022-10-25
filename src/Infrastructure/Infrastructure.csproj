@@ -43,14 +43,15 @@
       <OutputPath>..\Clients\UserClient.cs</OutputPath>
       <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
     </OpenApiReference>
-  </ItemGroup>
-  <ItemGroup>
     <OpenApiReference Include="OpenAPIs\family.json" CodeGenerator="NSwagCSharp" Namespace="Midas.Services.Family">
       <ClassName>FamilyClient</ClassName>
       <OutputPath>..\Clients\FamilyClient.cs</OutputPath>
-      <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options> 
+      <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
+    </OpenApiReference>
+    <OpenApiReference Include="OpenAPIs\filestorage.json" CodeGenerator="NSwagCSharp" Namespace="Midas.Services.FileStorage">
+      <ClassName>FileStorageClient</ClassName>
+      <OutputPath>..\Clients\FileStorageClient.cs</OutputPath>
+      <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
     </OpenApiReference>
   </ItemGroup>
-  
-  
 </Project>

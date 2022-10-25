@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Midas.Services;
+using Midas.Services.User;
 
 namespace Application.Middlewares;
 
@@ -14,17 +15,17 @@ public class AuthorizationMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext context, IAuthorizationClient authorizationClient)
+    public async Task Invoke(HttpContext context, IUserClient userClient)
     {
-        var isAuthorized = await CheckAuthorization(context, authorizationClient).ConfigureAwait(false);
-        
-        if (isAuthorized)
-        {
-            await _next(context);
-        }
+        var isAuthorized = await CheckAuthorization(context, userClient).ConfigureAwait(false);
+
+        if (!isAuthorized) return;
+
+        try { await _next(context); }
+        catch (Exception ex) { await HandleExceptionAsync(context, ex); }
     }
 
-    public async Task<bool> CheckAuthorization(HttpContext context, IAuthorizationClient authorizationClient)
+    private async Task<bool> CheckAuthorization(HttpContext context, IUserClient userClient)
     {
         var authHeader = context.Request.Headers["Authorization"].ToString();
         
@@ -36,8 +37,16 @@ public class AuthorizationMiddleware
         var token = authHeader.Replace("Bearer ", "");
         var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
         var email = jwtToken.Claims.First(x => x.Type == ClaimTypes.Email)?.Value;
-        var user = await authorizationClient.GetUserByEmailAsync(email).ConfigureAwait(false);
+        var user = await userClient.GetUserByEmailAsync(email).ConfigureAwait(false);
 
         return user is not null;
+    }
+    
+    private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+    {
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        
+        await context.Response.WriteAsync(ex.Message + "\n\n" + ex.StackTrace);
     }
 }

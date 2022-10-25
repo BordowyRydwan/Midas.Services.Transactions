@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Clients" />
     <Folder Include="Migrations" />
   </ItemGroup>
 
@@ -35,13 +36,22 @@
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <OpenApiReference Include="OpenAPIs\auth.json" CodeGenerator="NSwagCSharp" Namespace="Midas.Services">
-      <SourceUri>https://localhost:7034/swagger/v1/swagger.json</SourceUri>
-      <ClassName>AuthorizationClient</ClassName>
-      <OutputPath>..\Clients\AuthorizationClient.cs</OutputPath>
-      <Options>/GenerateClientInterfaces:true /UseBaseUrl:false</Options>
+    <OpenApiReference Include="OpenAPIs\user.json" CodeGenerator="NSwagCSharp" Namespace="Midas.Services.User">
+      <ClassName>UserClient</ClassName>
+      <OutputPath>..\Clients\UserClient.cs</OutputPath>
+      <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
+    </OpenApiReference>
+    <OpenApiReference Include="OpenAPIs\family.json" CodeGenerator="NSwagCSharp" Namespace="Midas.Services.Family">
+      <ClassName>FamilyClient</ClassName>
+      <OutputPath>..\Clients\FamilyClient.cs</OutputPath>
+      <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
+    </OpenApiReference>
+    <OpenApiReference Include="OpenAPIs\filestorage.json" CodeGenerator="NSwagCSharp" Namespace="Midas.Services.FileStorage">
+      <ClassName>FileStorageClient</ClassName>
+      <OutputPath>..\Clients\FileStorageClient.cs</OutputPath>
+      <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
     </OpenApiReference>
   </ItemGroup>
 </Project>

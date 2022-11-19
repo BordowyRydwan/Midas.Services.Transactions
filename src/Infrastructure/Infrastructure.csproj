@@ -49,7 +49,7 @@
       <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
     </OpenApiReference>
     <OpenApiReference Include="OpenAPIs\filestorage.json" CodeGenerator="NSwagCSharp" Namespace="Midas.Services.FileStorage">
-      <ClassName>FileStorageClient</ClassName>
+      <ClassName>FileStorageClient</ClassName> 
       <OutputPath>..\Clients\FileStorageClient.cs</OutputPath>
       <Options>/GenerateClientInterfaces:true /UseBaseUrl:false /GenerateExceptionClasses:true</Options>
     </OpenApiReference>

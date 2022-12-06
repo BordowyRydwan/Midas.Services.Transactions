@@ -7,9 +7,9 @@ public static class MigrateDatabaseExtension
 {
     public static void MigrateDatabase(this WebApplication app)
     {
-        using var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-        using var transactionCtx = scope.ServiceProvider.GetRequiredService<TransactionDbContext>();
-        
-        transactionCtx.Database.Migrate();
+        var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        var transactionCtx = scope.ServiceProvider.GetRequiredService<TransactionDbContext>();
+
+        transactionCtx.Database.EnsureCreated();
     }
 }

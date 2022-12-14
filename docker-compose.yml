@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.5"
 
 services:
   web:
@@ -14,3 +14,8 @@ services:
       SA_PASSWORD: zaq1@WSX
     ports:
       - "6003:1433"
+
+networks:
+  default:
+    name: midas
+    external: true

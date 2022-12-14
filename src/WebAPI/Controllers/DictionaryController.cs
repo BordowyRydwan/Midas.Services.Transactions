@@ -23,7 +23,7 @@ public class DictionaryController : ControllerBase
         return Ok(result);
     }
     
-    [SwaggerOperation(Summary = "Get all possible currencies")]
+    [SwaggerOperation(Summary = "Get all possible categories")]
     [ProducesResponseType(typeof(TransactionCategoryListDto), 200)]
     [HttpGet("TransactionCategories", Name = nameof(GetTransactionCategories))]
     public async Task<IActionResult> GetTransactionCategories()

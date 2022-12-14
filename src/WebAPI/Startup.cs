@@ -165,11 +165,11 @@ public class Startup
         
         app.UseCors("Open");
         app.UseHeaderPropagation();
-        //app.MigrateDatabase();
         app.UseHttpsRedirection();
         app.UseMiddleware<AuthorizationMiddleware>();
         app.UseAuthentication();
         app.MapControllers();
+        app.MigrateDatabase();
         app.Run();
         
         _logger.Debug("Application has been successfully ran");

@@ -18,7 +18,7 @@ public class TransactionController : ControllerBase
 
     [SwaggerOperation(Summary = "Add transaction")]
     [HttpPost("Add", Name = nameof(AddTransaction))]
-    public async Task<IActionResult> AddTransaction(TransactionDto dto)
+    public async Task<IActionResult> AddTransaction([FromBody] TransactionDto dto)
     {
         try
         {
@@ -50,7 +50,7 @@ public class TransactionController : ControllerBase
     
     [SwaggerOperation(Summary = "Modify transaction")]
     [HttpPatch("Modify", Name = nameof(ModifyTransaction))]
-    public async Task<IActionResult> ModifyTransaction(TransactionDto dto)
+    public async Task<IActionResult> ModifyTransaction([FromBody] TransactionDto dto)
     {
         try
         {
@@ -83,8 +83,8 @@ public class TransactionController : ControllerBase
     
     [SwaggerOperation(Summary = "Get all transactions for user")]
     [ProducesResponseType(typeof(TransactionListDto), 200)]
-    [HttpGet("Transactions/{userId}", Name = nameof(GetTransactionsForUserAndBetweenDates))]
-    public async Task<IActionResult> GetTransactionsForUserAndBetweenDates(GetTransactionsForUserBetweenDatesDto dto)
+    [HttpGet("Transactions", Name = nameof(GetTransactionsForUserAndBetweenDates))]
+    public async Task<IActionResult> GetTransactionsForUserAndBetweenDates([FromQuery] GetTransactionsForUserBetweenDatesDto dto)
     {
         try
         {

@@ -31,7 +31,7 @@ public class Startup
 
     public Startup SetBuilderOptions()
     {
-        _builder.Services.AddControllers();
+        _builder.Services.AddControllers().AddNewtonsoftJson();
         _builder.Services.AddEndpointsApiExplorer();
         _builder.Services.AddSwaggerGen();
 
@@ -117,22 +117,37 @@ public class Startup
         var userHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(userServiceAddress));
         var familyHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(familyServiceAddress));
         var fileHttpClientDelegate = (Action<HttpClient>)(client => client.BaseAddress = new Uri(fileServiceAddress));
-        var httpClientHandler = new HttpClientHandler
-        {
-            ClientCertificateOptions = ClientCertificateOption.Manual,
-            ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true
-        };
         
         _builder.Services.AddHeaderPropagation(o => o.Headers.Add("Authorization"));
-        
         _builder.Services.AddHttpClient<IUserClient, UserClient>(userHttpClientDelegate)
-            .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual,
+                    ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true
+                };
+            })
             .AddHeaderPropagation();
         _builder.Services.AddHttpClient<IFamilyClient, FamilyClient>(familyHttpClientDelegate)
-            .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual,
+                    ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true
+                };
+            })
             .AddHeaderPropagation();
         _builder.Services.AddHttpClient<IFileStorageClient, FileStorageClient>(fileHttpClientDelegate)
-            .ConfigurePrimaryHttpMessageHandler(() => httpClientHandler)
+            .ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    ClientCertificateOptions = ClientCertificateOption.Manual,
+                    ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, cetChain, policyErrors) => true
+                };
+            })
             .AddHeaderPropagation();
         
         return this;
@@ -148,11 +163,11 @@ public class Startup
             app.UseSwaggerUI();
         }
         
+        app.UseCors("Open");
         app.UseHeaderPropagation();
-        app.MigrateDatabase();
+        //app.MigrateDatabase();
         app.UseHttpsRedirection();
         app.UseMiddleware<AuthorizationMiddleware>();
-        app.UseCors("Open");
         app.UseAuthentication();
         app.MapControllers();
         app.Run();

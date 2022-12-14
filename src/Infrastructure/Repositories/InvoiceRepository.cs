@@ -44,6 +44,11 @@ public class InvoiceRepository : IInvoiceRepository
             throw new NullReferenceException($"Transaction with ID: {invoice.TransactionId} does not exist");
         }
 
+        if (transaction.Invoices is null)
+        {
+            transaction.Invoices = new List<Invoice>();
+        }
+        
         var isInvoiceAlreadyInList = transaction.Invoices.Any(x => x.FileId == invoice.FileId);
 
         if (isInvoiceAlreadyInList)
@@ -52,8 +57,10 @@ public class InvoiceRepository : IInvoiceRepository
         }
 
         transaction.DateModified = DateTime.UtcNow;
+        
+        _context.Entry(invoice).State = EntityState.Added;
         transaction.Invoices.Add(invoice);
-        _context.Transactions.Update(transaction);
+        
         await _context.SaveChangesAsync().ConfigureAwait(false);
     }
 }

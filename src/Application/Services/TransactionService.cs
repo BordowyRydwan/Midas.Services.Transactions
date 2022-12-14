@@ -36,7 +36,7 @@ public class TransactionService : ITransactionService
     
     public async Task AddTransaction(TransactionDto transaction)
     {
-        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transaction.Id);
+        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transaction);
         var canChangeValue = await PermissionHelper.IsTransactionOwnedByUserOrHisFamily(permissionCheckArgs);
         
         if (!canChangeValue)
@@ -50,7 +50,8 @@ public class TransactionService : ITransactionService
 
     public async Task DeleteTransaction(ulong transactionId)
     {
-        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transactionId);
+        var transactionEntity = await _transactionRepository.GetTransaction(transactionId);
+        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transactionEntity);
         var canChangeValue = await PermissionHelper.IsTransactionOwnedByUserOrHisFamily(permissionCheckArgs);
         
         if (!canChangeValue)
@@ -63,7 +64,7 @@ public class TransactionService : ITransactionService
 
     public async Task ModifyTransaction(TransactionDto transaction)
     {
-        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transaction.Id);
+        var permissionCheckArgs = GenerateDefaultPermissionCheckArgs(transaction);
         var canChangeValue = await PermissionHelper.IsTransactionOwnedByUserOrHisFamily(permissionCheckArgs);
         
         if (!canChangeValue)
@@ -112,13 +113,19 @@ public class TransactionService : ITransactionService
         return result;
     }
 
-    private TransactionOwnedByUserOrHisFamilyArgs GenerateDefaultPermissionCheckArgs(ulong transactionId)
+    private TransactionOwnedByUserOrHisFamilyArgs GenerateDefaultPermissionCheckArgs(TransactionDto transaction)
     {
         return new TransactionOwnedByUserOrHisFamilyArgs
         {
-            TransactionId = Convert.ToInt64(transactionId),
+            Transaction = transaction,
             UserClient = _userClient,
             FamilyClient = _familyClient
         };
+    }
+    
+    private TransactionOwnedByUserOrHisFamilyArgs GenerateDefaultPermissionCheckArgs(Transaction transaction)
+    {
+        var transactionDto = _mapper.Map<Transaction, TransactionDto>(transaction);
+        return GenerateDefaultPermissionCheckArgs(transactionDto);
     }
 }

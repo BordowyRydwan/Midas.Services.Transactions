@@ -21,6 +21,9 @@ public class TransactionRepository : ITransactionRepository
             throw new ArgumentNullException("Transaction argument is null");
         }
         
+        transaction.DateCreated = DateTime.UtcNow;
+        transaction.DateModified = DateTime.UtcNow;
+        
         await _context.Transactions.AddAsync(transaction).ConfigureAwait(false);
         await _context.SaveChangesAsync().ConfigureAwait(false);
     }
@@ -59,8 +62,8 @@ public class TransactionRepository : ITransactionRepository
         existingEntity.Description = transaction.Description;
         existingEntity.RecipientName = transaction.RecipientName;
         existingEntity.Amount = transaction.Amount;
-        existingEntity.Currency = transaction.Currency;
-        existingEntity.TransactionCategory = transaction.TransactionCategory;
+        existingEntity.CurrencyCode = transaction.CurrencyCode;
+        existingEntity.TransactionCategoryId = transaction.TransactionCategoryId;
         existingEntity.DateModified = DateTime.UtcNow;
 
         _context.Transactions.Update(existingEntity);
@@ -75,6 +78,18 @@ public class TransactionRepository : ITransactionRepository
             .Include(x => x.Invoices)
             .Where(x => x.UserId == userId)
             .ToListAsync()
+            .ConfigureAwait(false);
+
+        return transactionList ?? new List<Transaction>();
+    }
+    
+    public async Task<Transaction> GetTransaction(ulong transactionId)
+    {
+        var transactionList = await _context.Transactions
+            .Include(x => x.Currency)
+            .Include(x => x.TransactionCategory)
+            .Include(x => x.Invoices)
+            .SingleOrDefaultAsync(x => x.Id == transactionId)
             .ConfigureAwait(false);
 
         return transactionList;

@@ -1,3 +1,5 @@
+using Midas.Services.FileStorage;
+
 namespace Application.Dto;
 
 public class AddInvoiceDto

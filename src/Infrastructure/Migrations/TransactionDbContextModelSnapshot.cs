@@ -36,7 +36,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Code");
 
-                    b.ToTable("Currencies");
+                    b.ToTable("Currencies", (string)null);
 
                     b.HasData(
                         new
@@ -60,7 +60,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("TransactionId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Transaction", b =>
@@ -78,6 +78,12 @@ namespace Infrastructure.Migrations
                     b.Property<string>("CurrencyCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -103,7 +109,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("TransactionCategoryId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.TransactionCategory", b =>
@@ -123,32 +129,32 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionCategories");
+                    b.ToTable("TransactionCategories", (string)null);
 
                     b.HasData(
                         new
                         {
                             Id = 1m,
                             IsIncome = false,
-                            Name = "Rent"
+                            Name = "Opłaty"
                         },
                         new
                         {
                             Id = 2m,
                             IsIncome = false,
-                            Name = "Subscriptions"
+                            Name = "Subskrypcje"
                         },
                         new
                         {
                             Id = 3m,
                             IsIncome = false,
-                            Name = "Mortgages"
+                            Name = "Pożyczki / kredyty"
                         },
                         new
                         {
                             Id = 4m,
                             IsIncome = false,
-                            Name = "Tax"
+                            Name = "Podatki"
                         },
                         new
                         {
@@ -160,91 +166,91 @@ namespace Infrastructure.Migrations
                         {
                             Id = 6m,
                             IsIncome = false,
-                            Name = "Home"
+                            Name = "Dom"
                         },
                         new
                         {
                             Id = 7m,
                             IsIncome = false,
-                            Name = "Health & Beauty"
+                            Name = "Zdrowie i uroda"
                         },
                         new
                         {
                             Id = 8m,
                             IsIncome = false,
-                            Name = "Food"
+                            Name = "Produkty spożywcze"
                         },
                         new
                         {
                             Id = 9m,
                             IsIncome = false,
-                            Name = "Entertainment"
+                            Name = "Rozrywka"
                         },
                         new
                         {
                             Id = 10m,
                             IsIncome = false,
-                            Name = "Alimony"
+                            Name = "Alimenty"
                         },
                         new
                         {
                             Id = 11m,
                             IsIncome = false,
-                            Name = "Donation"
+                            Name = "Dotacje"
                         },
                         new
                         {
                             Id = 12m,
                             IsIncome = false,
-                            Name = "Investments"
+                            Name = "Inwestycje"
                         },
                         new
                         {
                             Id = 13m,
                             IsIncome = false,
-                            Name = "Other expenses"
+                            Name = "Inne wydatki"
                         },
                         new
                         {
                             Id = 14m,
                             IsIncome = true,
-                            Name = "Donation"
+                            Name = "Dotacje"
                         },
                         new
                         {
                             Id = 15m,
                             IsIncome = true,
-                            Name = "Salary"
+                            Name = "Wynagrodzenie"
                         },
                         new
                         {
                             Id = 16m,
                             IsIncome = true,
-                            Name = "Pension"
+                            Name = "Emerytura / renta"
                         },
                         new
                         {
                             Id = 17m,
                             IsIncome = true,
-                            Name = "Investments"
+                            Name = "Inwestycje"
                         },
                         new
                         {
                             Id = 18m,
                             IsIncome = true,
-                            Name = "Business"
+                            Name = "Biznes"
                         },
                         new
                         {
                             Id = 19m,
                             IsIncome = true,
-                            Name = "Alimony"
+                            Name = "Alimenty"
                         },
                         new
                         {
                             Id = 20m,
                             IsIncome = true,
-                            Name = "Other incomes"
+                            Name = "Inne przychody"
                         });
                 });
 

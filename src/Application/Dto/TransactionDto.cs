@@ -1,5 +1,6 @@
 namespace Application.Dto;
 
+[Serializable]
 public class TransactionDto
 {
     public ulong Id { get; set; }
@@ -11,11 +12,9 @@ public class TransactionDto
     public DateTime DateModified { get; set; }
     public ulong UserId { get; set; }
     
-    public string CurrencyCode { get; set; }
     public CurrencyDto Currency { get; set; }
-    
-    public ulong TransactionCategoryId { get; set; }
     public TransactionCategoryDto TransactionCategory { get; set; }
-
     public InvoiceListDto Invoices { get; set; }
+
+    public TransactionDto() { }
 }

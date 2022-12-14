@@ -1,6 +1,7 @@
 using Application.Dto;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Midas.Services.FileStorage;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace WebAPI.Controllers;
@@ -18,12 +19,13 @@ public class InvoiceController : ControllerBase
 
     [SwaggerOperation(Summary = "Add invoice to transaction")]
     [HttpPost("Invoice", Name = nameof(AddInvoice))]
-    public async Task<IActionResult> AddInvoice(AddInvoiceDto dto)
+    [ProducesResponseType(typeof(FileMetadataDto), 200)]
+    public async Task<IActionResult> AddInvoice([FromBody] AddInvoiceDto dto)
     {
         try
         {
-            await _invoiceService.AddInvoice(dto).ConfigureAwait(false);
-            return Ok();
+            var result = await _invoiceService.AddInvoice(dto).ConfigureAwait(false);
+            return Ok(result);
         }
         catch (Exception ex)
         {

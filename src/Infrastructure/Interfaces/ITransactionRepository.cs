@@ -10,4 +10,5 @@ public interface ITransactionRepository : IRepository
 
     public Task<ICollection<Transaction>> GetTransactionsForUser(ulong userId);
     public Task<ICollection<Transaction>> GetTransactionsForUserBetweenDates(ulong userId, DateTime dateFrom, DateTime dateTo);
+    public Task<Transaction> GetTransaction(ulong transactionId);
 }

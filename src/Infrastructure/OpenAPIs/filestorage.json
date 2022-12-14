@@ -1,8 +1,8 @@
 {
     "openapi": "3.0.1",
     "info": {
-        "title": "WebAPI",
-        "version": "1.0"
+        "title": "File Storage API",
+        "version": "0.1"
     },
     "paths": {
         "/api/FileStorage/MarkAsDeleted": {
@@ -10,6 +10,7 @@
                 "tags": [
                     "FileStorage"
                 ],
+                "summary": "Mark file as deleted",
                 "operationId": "MarkFileAsDeleted",
                 "parameters": [
                     {
@@ -33,6 +34,7 @@
                 "tags": [
                     "FileStorage"
                 ],
+                "summary": "Modify type of file",
                 "operationId": "ModifyFileType",
                 "parameters": [
                     {
@@ -63,6 +65,7 @@
                 "tags": [
                     "FileStorage"
                 ],
+                "summary": "Modify a name of file",
                 "operationId": "ModifyFileName",
                 "parameters": [
                     {
@@ -93,6 +96,7 @@
                 "tags": [
                     "FileStorage"
                 ],
+                "summary": "Get metadata of a file",
                 "operationId": "GetFileMetadata",
                 "parameters": [
                     {
@@ -134,27 +138,31 @@
                 "tags": [
                     "FileTransfer"
                 ],
+                "summary": "Add file to File Storage Service",
                 "operationId": "AddFile",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "multipart/form-data": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "Content": {
+                                    "file": {
                                         "type": "string",
                                         "format": "binary"
-                                    },
-                                    "Type": {
-                                        "type": "string"
                                     }
                                 }
                             },
                             "encoding": {
-                                "Content": {
-                                    "style": "form"
-                                },
-                                "Type": {
+                                "file": {
                                     "style": "form"
                                 }
                             }
@@ -190,6 +198,7 @@
                 "tags": [
                     "FileTransfer"
                 ],
+                "summary": "Download file from File Storage Service",
                 "operationId": "DownloadFile",
                 "parameters": [
                     {
@@ -233,9 +242,15 @@
                 "tags": [
                     "FileTransfer"
                 ],
+                "summary": "Download multiple files from File Storage Service",
                 "operationId": "DownloadFiles",
                 "requestBody": {
                     "content": {
+                        "application/json-patch+json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DownloadFileInputsDto"
+                            }
+                        },
                         "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/DownloadFileInputsDto"
@@ -285,6 +300,7 @@
                 "tags": [
                     "FileTransfer"
                 ],
+                "summary": "Get info about file downloads from File Storage Service",
                 "operationId": "GetFileDownloads",
                 "parameters": [
                     {

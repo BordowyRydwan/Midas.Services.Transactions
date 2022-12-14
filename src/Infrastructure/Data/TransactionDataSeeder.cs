@@ -13,29 +13,29 @@ public static class TransactionDataSeeder
         
         modelBuilder.Entity<TransactionCategory>().HasData(
             #region EXPENSES
-            new TransactionCategory { Id = 1UL, Name = "Rent", IsIncome = false },
-            new TransactionCategory { Id = 2UL, Name = "Subscriptions", IsIncome = false },
-            new TransactionCategory { Id = 3UL, Name = "Mortgages", IsIncome = false },
-            new TransactionCategory { Id = 4UL, Name = "Tax", IsIncome = false },
+            new TransactionCategory { Id = 1UL, Name = "Opłaty", IsIncome = false },
+            new TransactionCategory { Id = 2UL, Name = "Subskrypcje", IsIncome = false },
+            new TransactionCategory { Id = 3UL, Name = "Pożyczki / kredyty", IsIncome = false },
+            new TransactionCategory { Id = 4UL, Name = "Podatki", IsIncome = false },
             new TransactionCategory { Id = 5UL, Name = "Transport", IsIncome = false },
-            new TransactionCategory { Id = 6UL, Name = "Home", IsIncome = false },
-            new TransactionCategory { Id = 7UL, Name = "Health & Beauty", IsIncome = false },
-            new TransactionCategory { Id = 8UL, Name = "Food", IsIncome = false },
-            new TransactionCategory { Id = 9UL, Name = "Entertainment", IsIncome = false },
-            new TransactionCategory { Id = 10UL, Name = "Alimony", IsIncome = false },
-            new TransactionCategory { Id = 11UL, Name = "Donation", IsIncome = false },
-            new TransactionCategory { Id = 12UL, Name = "Investments", IsIncome = false },
-            new TransactionCategory { Id = 13UL, Name = "Other expenses", IsIncome = false },
+            new TransactionCategory { Id = 6UL, Name = "Dom", IsIncome = false },
+            new TransactionCategory { Id = 7UL, Name = "Zdrowie i uroda", IsIncome = false },
+            new TransactionCategory { Id = 8UL, Name = "Produkty spożywcze", IsIncome = false },
+            new TransactionCategory { Id = 9UL, Name = "Rozrywka", IsIncome = false },
+            new TransactionCategory { Id = 10UL, Name = "Alimenty", IsIncome = false },
+            new TransactionCategory { Id = 11UL, Name = "Dotacje", IsIncome = false },
+            new TransactionCategory { Id = 12UL, Name = "Inwestycje", IsIncome = false },
+            new TransactionCategory { Id = 13UL, Name = "Inne wydatki", IsIncome = false },
             #endregion
             
             #region INCOMES
-            new TransactionCategory { Id = 14UL, Name = "Donation", IsIncome = true },
-            new TransactionCategory { Id = 15UL, Name = "Salary", IsIncome = true },
-            new TransactionCategory { Id = 16UL, Name = "Pension", IsIncome = true },
-            new TransactionCategory { Id = 17UL, Name = "Investments", IsIncome = true },
-            new TransactionCategory { Id = 18UL, Name = "Business", IsIncome = true },
-            new TransactionCategory { Id = 19UL, Name = "Alimony", IsIncome = true },
-            new TransactionCategory { Id = 20UL, Name = "Other incomes", IsIncome = true }
+            new TransactionCategory { Id = 14UL, Name = "Dotacje", IsIncome = true },
+            new TransactionCategory { Id = 15UL, Name = "Wynagrodzenie", IsIncome = true },
+            new TransactionCategory { Id = 16UL, Name = "Emerytura / renta", IsIncome = true },
+            new TransactionCategory { Id = 17UL, Name = "Inwestycje", IsIncome = true },
+            new TransactionCategory { Id = 18UL, Name = "Biznes", IsIncome = true },
+            new TransactionCategory { Id = 19UL, Name = "Alimenty", IsIncome = true },
+            new TransactionCategory { Id = 20UL, Name = "Inne przychody", IsIncome = true }
             #endregion
         );
     }

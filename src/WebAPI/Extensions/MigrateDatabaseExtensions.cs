@@ -8,8 +8,10 @@ public static class MigrateDatabaseExtension
     public static void MigrateDatabase(this WebApplication app)
     {
         var scope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-        var transactionCtx = scope.ServiceProvider.GetRequiredService<TransactionDbContext>();
+        var ctx = scope.ServiceProvider.GetRequiredService<TransactionDbContext>();
 
-        transactionCtx.Database.EnsureCreated();
+        if (ctx.Database.GetPendingMigrations().Any()) {
+            ctx.Database.Migrate();
+        }
     }
 }

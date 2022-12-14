@@ -2,12 +2,14 @@ version: "3.5"
 
 services:
   web:
+    container_name: transactions_web
     build: .
     ports:
       - "8003:80"
     depends_on:
       - db
   db:
+    container_name: transactions_db
     image: "mcr.microsoft.com/mssql/server"
     environment:
       ACCEPT_EULA: "Y"

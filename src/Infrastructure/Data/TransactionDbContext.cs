@@ -16,6 +16,7 @@ public class TransactionDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema("transaction");
         modelBuilder.Entity<Currency>().HasKey(x => x.Code);
         modelBuilder.Entity<Invoice>().HasKey(x => x.FileId);
         modelBuilder.Seed();

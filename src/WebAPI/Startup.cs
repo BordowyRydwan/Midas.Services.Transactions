@@ -169,7 +169,7 @@ public class Startup
         app.UseMiddleware<AuthorizationMiddleware>();
         app.UseAuthentication();
         app.MapControllers();
-        app.MigrateDatabase();
+        //app.MigrateDatabase();
         app.Run();
         
         _logger.Debug("Application has been successfully ran");
